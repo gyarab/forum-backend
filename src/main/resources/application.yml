@@ -1,0 +1,20 @@
+server:
+  port: 7373
+spring:
+  liquibase:
+    enabled: false
+
+---
+#configuration taken into account only if specific profile is selected - thanks to this we use locally mariaDB
+spring:
+   profiles: embedded-mariadb
+   datasource:
+     url: "jdbc:mysql://localhost:${mariaDB4j.port}/forum_db"
+   jpa:
+     hibernate:
+       ddl-auto: update
+
+mariaDB4j:
+  port: 3310
+  dataDir: /var/db/mariadb
+debug: true
