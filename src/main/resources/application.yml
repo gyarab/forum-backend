@@ -9,7 +9,7 @@ spring:
 spring:
    profiles: embedded-mariadb
    datasource:
-     url: "jdbc:mysql://localhost:${mariaDB4j.port}/forum_db"
+     url: "jdbc:mysql://localhost:${mariaDB4j.port}/forum_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
    jpa:
      hibernate:
        ddl-auto: update

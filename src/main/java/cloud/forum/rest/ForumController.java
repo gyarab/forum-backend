@@ -8,7 +8,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000/")
 //Main Rest controller, configures REST API
 @RestController
 @RequestMapping("/forum")
@@ -19,6 +19,7 @@ public class ForumController {
     public ForumController(ForumService forumService) {
         this.forumService = forumService;
     }
+
     //Upon calling /forum/all get all forums in the database.
     @GetMapping("/all")
     public ResponseEntity<List<Forum>> getAllForums() {
