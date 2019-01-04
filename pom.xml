@@ -103,6 +103,12 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.naturalprogrammer.spring-lemon</groupId>
+            <artifactId>spring-lemon-jpa</artifactId>
+            <version>1.0.0.RC1</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

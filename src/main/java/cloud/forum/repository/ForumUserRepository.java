@@ -3,5 +3,8 @@ package cloud.forum.repository;
 import cloud.forum.domain.ForumUser;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ForumUserRepository extends CrudRepository<ForumUser,Long> {
+import java.util.Optional;
+
+public interface ForumUserRepository extends CrudRepository<ForumUser, Long> {
+    Optional<ForumUser> findByUsername(String username);
 }
