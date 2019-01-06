@@ -18,11 +18,11 @@ public class Post {
 
     //used later in the REST controller
     // to call out only the posts from a specific thread
-    @Column(name="thread")
-    private String thread;
+    @Column(name="title")
+    private String title;
 
     //the post itself
-    @Column(name="content")
+    @Column(name="content", length = 2048)
     private String content;
 
     //self-explanatory

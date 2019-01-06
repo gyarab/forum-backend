@@ -2,12 +2,13 @@ package cloud.forum.rest;
 
 import cloud.forum.domain.Forum;
 import cloud.forum.service.ForumService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @CrossOrigin(origins = "*")
 //Main Rest controller, configures REST API
@@ -23,9 +24,10 @@ public class ForumController {
 
     //Upon calling /forum/all get all forums in the database.
     @GetMapping("/all")
-    public ResponseEntity<List<Forum>> getAllForums() {
-        return ResponseEntity.ok(forumService.findAll());
+    public ResponseEntity<Page<Forum>> getAllForums(Pageable page) {
+        return ResponseEntity.ok(forumService.findAll(page));
     }
+
 
     //Create a forum when the frontend sends a Forum class to the /forum/create url
     @PostMapping("/create")

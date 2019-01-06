@@ -1,5 +1,7 @@
 package cloud.forum.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,9 +32,11 @@ public class Forum {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
+    @JsonManagedReference
     private Forum parent;
 
     //Collect all Forum classes to which this class is their parent.
     @OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Forum> children;
 }
