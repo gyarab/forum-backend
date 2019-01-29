@@ -1,5 +1,6 @@
 package cloud.forum.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,10 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Forum forum;
 
     //used later in the REST controller
     // to call out only the posts from a specific thread

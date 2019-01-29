@@ -25,6 +25,7 @@ public class Forum {
     // things such as the content itself, likes, dislikes and comments
     @OneToMany
     @JoinColumn(name = "forum_id")
+    @JsonBackReference
     private List<Post> posts;
 
     @Column(length = 128)

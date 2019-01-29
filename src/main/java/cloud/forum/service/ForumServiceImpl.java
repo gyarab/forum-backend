@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("forumService")
 public class ForumServiceImpl implements ForumService {
@@ -38,7 +40,16 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
-    public Page<Forum> findAll(Pageable page) {
-        return repository.findAll(page);
+    public Map<String, Long> getAllForumNames() {
+        Map<String, Long> result = new HashMap<>();
+       repository.findAll().forEach(forum -> {
+           result.put(forum.getName(),forum.getId());
+       });
+       return result;
     }
+
+//    @Override
+//    public Page<Forum> findAll(Pageable page) {
+//        return repository.findAll(page);
+//    }
 }
