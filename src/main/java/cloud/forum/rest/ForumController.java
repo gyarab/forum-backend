@@ -1,5 +1,6 @@
 package cloud.forum.rest;
 
+import cloud.forum.domain.Comment;
 import cloud.forum.domain.Forum;
 import cloud.forum.domain.Post;
 import cloud.forum.repository.PostRepository;
@@ -36,9 +37,17 @@ public class ForumController {
 
 
     //Create a forum when the frontend sends a Forum class to the /forum/create url
-    @PostMapping("/create")
+    @PostMapping("/create/forum")
     public ResponseEntity createForum(@RequestBody Forum forum) {
         Forum result = forumService.createForum(forum);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}").buildAndExpand(result.getId()).toUri();
+        return ResponseEntity.created(location).build();
+    }
+    @PostMapping("/create/post")
+    public ResponseEntity createForum(@RequestBody Post post){
+        Post result = postService.createPost(post);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();
@@ -49,5 +58,8 @@ public class ForumController {
     public ResponseEntity<Page<Post>> getForumPosts(@PathVariable(name = "id") Forum forum, Pageable page) {
         return ResponseEntity.ok(postService.findByForum(forum,page));
     }
+//    public ResponseEntity createComment(@RequestBody Comment comment){
+//
+//    }
 
 }

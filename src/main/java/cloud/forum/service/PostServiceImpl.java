@@ -19,4 +19,9 @@ public class PostServiceImpl implements PostService {
     public Page<Post> findByForum(Forum forum, Pageable page) {
         return postRepository.findAllByForum(forum, page);
     }
+
+    @Override
+    public Post createPost(Post post) {
+        return postRepository.save(post);
+    }
 }
