@@ -28,7 +28,7 @@ spring:
               client-id: 1234020186718741
               client-secret: 0c0abaf685a83e879e8e48b1167c96ab
 mariaDB4j:
-  port: 3310
+  port: 3313
   dataDir: /var/db/mariadb
 debug: true
 

@@ -17,7 +17,7 @@ public class MariaDbConfig {
     @Bean
     @Primary
     public DataSource mariaDbDataSource(DataSourceProperties dataSourceProperties, MariaDB4jService mariaDB4jService) throws Exception {
-        mariaDB4jService.getDB().createDB("forum_db");
+        mariaDB4jService.getDB().createDB("forum_db","root","changeit");
         return dataSourceProperties.initializeDataSourceBuilder().build();
     }
 

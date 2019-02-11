@@ -8,6 +8,7 @@ import cloud.forum.service.ForumService;
 import cloud.forum.service.PostService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,8 +17,10 @@ import java.net.URI;
 import java.util.Map;
 
 @CrossOrigin(origins = "*")
-//Main Rest controller, configures REST API
-@RestController
+/**
+ * Main Rest controller, configures REST API
+ */
+@RestController()
 @RequestMapping("/forum")
 public class ForumController {
 
@@ -37,7 +40,7 @@ public class ForumController {
 
 
     //Create a forum when the frontend sends a Forum class to the /forum/create url
-    @PostMapping("/create/forum")
+    @PostMapping(value = "/create/forum",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
     public ResponseEntity createForum(@RequestBody Forum forum) {
         Forum result = forumService.createForum(forum);
         URI location = ServletUriComponentsBuilder
