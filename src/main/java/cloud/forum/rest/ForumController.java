@@ -50,6 +50,7 @@ public class ForumController {
     }
     @PostMapping("/create/post")
     public ResponseEntity createForum(@RequestBody Post post){
+        System.out.println(post);
         Post result = postService.createPost(post);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
