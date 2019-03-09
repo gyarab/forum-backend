@@ -48,6 +48,15 @@ public class ForumServiceImpl implements ForumService {
        return result;
     }
 
+    @Override
+    public Map<String, Long> searchByTitle(String forumName) {
+        Map<String, Long> result = new HashMap<>();
+        repository.findForumsByNameContaining(forumName).forEach(forum ->{
+            result.put(forum.getName(), forum.getId());
+        });
+        return result;
+    }
+
 //    @Override
 //    public Page<Forum> findAll(Pageable page) {
 //        return repository.findAll(page);

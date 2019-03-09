@@ -61,6 +61,10 @@ public class ForumController {
     public ResponseEntity<Page<Post>> getForumPosts(@PathVariable(name = "id") Forum forum, Pageable page) {
         return ResponseEntity.ok(postService.findByForum(forum,page));
     }
+    @GetMapping("/search/{name}")
+    public ResponseEntity<Map<String, Long>> searchForumsByTitle(@PathVariable(name="name") String forumTitle){
+        return ResponseEntity.ok(forumService.searchByTitle(forumTitle));
+    }
 //    public ResponseEntity createComment(@RequestBody Comment comment){
 //
 //    }

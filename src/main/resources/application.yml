@@ -39,3 +39,5 @@ lemon:
   application-url: http://localhost:3000
   jwt:
     secret: 27924159D8B777B9457245B231294A62
+  cors:
+    allowed-origins: '*'

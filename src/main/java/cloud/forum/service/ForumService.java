@@ -13,5 +13,6 @@ public interface ForumService {
     List<Forum> findAll();
     Forum findForumById(Long id);
     Map<String,Long> getAllForumNames();
+    Map<String, Long> searchByTitle(String forumTitle);
 //    Page<Forum> findAll(Pageable page);
 }
