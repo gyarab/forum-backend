@@ -31,7 +31,7 @@ public class Post {
     private String title;
 
     //the post itself
-    @Column(name = "content", length = 2048)
+    @Column(name = "content", length = 10000)
     private String content;
 
     //self-explanatory
