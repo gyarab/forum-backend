@@ -21,7 +21,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Post findById(Long id) {
+        return postRepository.findById(id).isPresent()?  postRepository.findById(id).get() : null;
+    }
+
+    @Override
     public Post createPost(Post post) {
         return postRepository.save(post);
     }
+
+
 }
