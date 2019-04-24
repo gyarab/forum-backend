@@ -26,20 +26,34 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity createForum(@RequestBody Post post){
+    public ResponseEntity createPost(@RequestBody Post post) {
         Post result = postService.createPost(post);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(post);
     }
+
+    @PutMapping("/update/like/{postId}")
+    public ResponseEntity<Post> likePost(@PathVariable("postId") Post post) {
+        Post result = postService.like(post);
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/update/dislike/{postId}")
+    public ResponseEntity<Post> dislikePost(@PathVariable("postId") Post post) {
+        Post result = postService.dislike(post);
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/id/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable(name="id")Long id){
+    public ResponseEntity<Post> getPostById(@PathVariable(name = "id") Long id) {
         System.out.println(id);
         return ResponseEntity.ok(postService.findById(id));
     }
+
     @GetMapping("/forum/{id}/posts")
     public ResponseEntity<Page<Post>> getForumPosts(@PathVariable(name = "id") Forum forum, Pageable page) {
-        return ResponseEntity.ok(postService.findByForum(forum,page));
+        return ResponseEntity.ok(postService.findByForum(forum, page));
     }
 }

@@ -1,0 +1,10 @@
+spring:
+   datasource:
+     url: "jdbc:mysql://localhost:${mariaDB4j.port}/forum_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
+   jpa:
+     hibernate:
+       ddl-auto: update
+mariaDB4j:
+  port: 3313
+  dataDir: /var/db/mariadb
+debug: true
