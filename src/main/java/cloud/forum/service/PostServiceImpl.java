@@ -30,5 +30,19 @@ public class PostServiceImpl implements PostService {
         return postRepository.save(post);
     }
 
+    @Override
+    public Post like(Post post) {
+        long likes = post.getLikes() + 1;
+        post.setLikes(likes);
+        return postRepository.saveAndFlush(post);
+    }
+
+    @Override
+    public Post dislike(Post post) {
+        long dislikes = post.getDislikes() + 1;
+        post.setDislikes(dislikes);
+        return postRepository.saveAndFlush(post);
+    }
+
 
 }

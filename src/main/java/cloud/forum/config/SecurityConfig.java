@@ -31,7 +31,10 @@ public class SecurityConfig extends LemonJpaSecurityConfig {
     @Override
     protected void authorizeRequests(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .mvcMatchers("/forum/create/post/**").authenticated();
+                .mvcMatchers("/forum/create/**")
+                .authenticated()
+                .mvcMatchers("/comment/update/**").authenticated();
+
         super.authorizeRequests(http);
     }
 

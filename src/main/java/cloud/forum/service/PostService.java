@@ -7,6 +7,13 @@ import org.springframework.data.domain.Pageable;
 
 public interface PostService {
     Page<Post> findByForum(Forum forum, Pageable page);
+
     Post findById(Long id);
+
     Post createPost(Post post);
+
+    Post like(Post post);
+
+    Post dislike(Post post);
+
 }

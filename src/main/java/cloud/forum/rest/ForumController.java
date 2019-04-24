@@ -32,7 +32,7 @@ public class ForumController {
     }
 
 
-    //Create a forum when the frontend sends a Forum class to the /forum/create url
+    //Create a forum when the frontend sends a Forum object to the /forum/create url
     @PostMapping(value = "/create",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
     public ResponseEntity createForum(@RequestBody Forum forum) {
         Forum result = forumService.createForum(forum);
