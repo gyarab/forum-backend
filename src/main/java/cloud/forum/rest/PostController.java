@@ -1,11 +1,19 @@
 package cloud.forum.rest;
 
+import cloud.forum.dataTransferObjects.PostAttitudeDto;
 import cloud.forum.domain.Forum;
+import cloud.forum.domain.LemonUser;
 import cloud.forum.domain.Post;
 import cloud.forum.service.PostService;
+import com.naturalprogrammer.spring.lemon.LemonService;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
+import com.naturalprogrammer.spring.lemon.commonsjpa.LecjUtils;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,8 +29,11 @@ public class PostController {
 
     private final PostService postService;
 
-    public PostController(PostService postService) {
+    private final LemonService<LemonUser, Long> lemonService;
+
+    public PostController(PostService postService, LemonService<LemonUser, Long> lemonService) {
         this.postService = postService;
+        this.lemonService = lemonService;
     }
 
     @PostMapping("/create")
@@ -35,14 +46,18 @@ public class PostController {
     }
 
     @PutMapping("/update/like/{postId}")
-    public ResponseEntity<Post> likePost(@PathVariable("postId") Post post) {
-        Post result = postService.like(post);
+    public ResponseEntity<PostAttitudeDto> likePost(@PathVariable("postId") Post post,
+                                         @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
+        LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+        PostAttitudeDto result = postService.like(post, lemonUser);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/update/dislike/{postId}")
-    public ResponseEntity<Post> dislikePost(@PathVariable("postId") Post post) {
-        Post result = postService.dislike(post);
+    public ResponseEntity<PostAttitudeDto> dislikePost(@PathVariable("postId") Post post,
+                                            @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
+        LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+        PostAttitudeDto result = postService.dislike(post, lemonUser);
         return ResponseEntity.ok(result);
     }
 
@@ -53,7 +68,10 @@ public class PostController {
     }
 
     @GetMapping("/forum/{id}/posts")
-    public ResponseEntity<Page<Post>> getForumPosts(@PathVariable(name = "id") Forum forum, Pageable page) {
-        return ResponseEntity.ok(postService.findByForum(forum, page));
+    public ResponseEntity<Page<PostAttitudeDto>> getForumPosts(@PathVariable(name = "id") Forum forum,
+//                                                               @AuthenticationPrincipal(expression = "currentUser()") UserDto user,
+                                                               Pageable page) {
+        UserDto user = LecwUtils.currentUser();
+        return ResponseEntity.ok(postService.findByForum(forum, user, page));
     }
 }
