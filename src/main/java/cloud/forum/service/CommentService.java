@@ -1,5 +1,6 @@
 package cloud.forum.service;
 
+import cloud.forum.dataTransferObjects.CommentAttitudeDto;
 import cloud.forum.domain.Comment;
 import cloud.forum.domain.LemonUser;
 import cloud.forum.domain.Post;
@@ -10,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface CommentService {
-    Page<Comment> getCommentByPost(Post post, Pageable pageable);
+    Page<CommentAttitudeDto> getCommentByPost(Post post, UserDto user, Pageable pageable);
 
     Comment createComment(Comment comment);
 
-    Comment like(Comment comment, LemonUser user);
+    CommentAttitudeDto like(Comment comment, LemonUser user);
 
-    Comment dislike(Comment comment, LemonUser user);
+    CommentAttitudeDto dislike(Comment comment, LemonUser user);
 }

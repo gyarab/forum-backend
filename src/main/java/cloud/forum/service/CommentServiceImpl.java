@@ -1,11 +1,14 @@
 package cloud.forum.service;
 
+import cloud.forum.dataTransferObjects.CommentAttitudeDto;
+import cloud.forum.dataTransferObjects.PostAttitudeDto;
 import cloud.forum.domain.Comment;
 import cloud.forum.domain.CommentAttitude;
 import cloud.forum.domain.LemonUser;
 import cloud.forum.domain.Post;
 import cloud.forum.repository.CommentAttitudeRepository;
 import cloud.forum.repository.CommentRepository;
+import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,28 +16,40 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.Optional;
+
 import static cloud.forum.domain.enums.Attitude.DISLIKE;
 import static cloud.forum.domain.enums.Attitude.LIKE;
+import static cloud.forum.domain.enums.Attitude.NEUTRAL;
 
 @Service("commentService")
 @Transactional
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
-
+    private final LemonService<LemonUser,Long> lemonService;
     private final CommentAttitudeRepository attitudeRepository;
 
-    public CommentServiceImpl(CommentRepository repository, CommentAttitudeRepository attitudeRepository) {
+    public CommentServiceImpl(CommentRepository repository, LemonService<LemonUser, Long> lemonService, CommentAttitudeRepository attitudeRepository) {
         this.repository = repository;
+        this.lemonService = lemonService;
         this.attitudeRepository = attitudeRepository;
     }
 
     @Override
-    public Page<Comment> getCommentByPost(Post post, Pageable pageable) {
-        return repository.findAllByPost(post, pageable);
+    public Page<CommentAttitudeDto> getCommentByPost(Post post, UserDto user, Pageable pageable) {
+
+        Page<Comment> comments = repository.findAllByPost(post, pageable);
+
+        return Optional.ofNullable(user).map(a -> {
+            LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+            return comments.map(comment -> attitudeRepository.findByOwnerAndComment(lemonUser,comment)
+                    .map(commentAttitude ->  new CommentAttitudeDto(lemonUser.getId(),commentAttitude.getAttitude(),comment))
+                    .orElseGet(() -> new CommentAttitudeDto(lemonUser.getId(), NEUTRAL, comment)));
+        }).orElseGet(() -> comments.map(c -> new CommentAttitudeDto(null, NEUTRAL, c)));
     }
 
     @Override
-    public Comment like(Comment comment, LemonUser user) {
+    public CommentAttitudeDto like(Comment comment, LemonUser user) {
 
         CommentAttitude commentAttitude = attitudeRepository.findByOwnerAndComment(user, comment)
                 .map(a -> {
@@ -57,11 +72,12 @@ public class CommentServiceImpl implements CommentService {
                     return new CommentAttitude(user, comment, LIKE);
                 });
         attitudeRepository.saveAndFlush(commentAttitude);
-        return repository.saveAndFlush(comment);
+        Comment result = repository.saveAndFlush(comment);
+        return new CommentAttitudeDto(user.getId(),LIKE,result);
     }
 
     @Override
-    public Comment dislike(Comment comment, LemonUser user) {
+    public CommentAttitudeDto dislike(Comment comment, LemonUser user) {
         CommentAttitude commentAttitude = attitudeRepository.findByOwnerAndComment(user, comment)
                 .map(a -> {
                     switch (a.getAttitude()) {
@@ -82,7 +98,8 @@ public class CommentServiceImpl implements CommentService {
                     return new CommentAttitude(user, comment, DISLIKE);
                 });
         attitudeRepository.saveAndFlush(commentAttitude);
-        return repository.saveAndFlush(comment);
+        Comment result =  repository.saveAndFlush(comment);
+        return new CommentAttitudeDto(user.getId(), DISLIKE, result);
     }
 
     @Override

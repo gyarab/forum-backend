@@ -1,5 +1,6 @@
 package cloud.forum.rest;
 
+import cloud.forum.dataTransferObjects.CommentAttitudeDto;
 import cloud.forum.domain.Comment;
 import cloud.forum.domain.LemonUser;
 import cloud.forum.domain.Post;
@@ -30,34 +31,38 @@ public class CommentController {
     }
 
     @PutMapping("/update/like/{commentId}")
-    public ResponseEntity<Comment> likeComment(@PathVariable("commentId") Comment comment,
-                                               @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
+    public ResponseEntity<CommentAttitudeDto> likeComment(@PathVariable("commentId") Comment comment,
+                                                          @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
         LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
 //        LecwUtils.currentUser()
-        Comment result = commentService.like(comment, lemonUser);
+        CommentAttitudeDto result = commentService.like(comment, lemonUser);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/update/dislike/{commentId}")
-    public ResponseEntity<Comment> dislikeComment(@PathVariable("commentId") Comment comment,
+    public ResponseEntity<CommentAttitudeDto> dislikeComment(@PathVariable("commentId") Comment comment,
                                                   @AuthenticationPrincipal (expression = "currentUser()") UserDto user) {
         LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
-        Comment result = commentService.dislike(comment, lemonUser);
+        CommentAttitudeDto result = commentService.dislike(comment, lemonUser);
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity createComment(@RequestBody Comment comment) {
-        Comment result = commentService.createComment(comment);
+    @PostMapping("/create/{postId}")
+    public ResponseEntity createComment(@PathVariable("postId") Post post,
+                                        @RequestBody Comment comment) {
+        Comment result =comment;
+         result.setPost(post);
+               result =  commentService.createComment(result);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location).body(comment);
+        return ResponseEntity.created(location).body(result);
     }
 
     @GetMapping("/{postId}/post")
-    public ResponseEntity<Page<Comment>> commentsByPost(@PathVariable("postId") Post post, Pageable pageable) {
-        Page<Comment> comments = commentService.getCommentByPost(post, pageable);
+    public ResponseEntity<Page<CommentAttitudeDto>> commentsByPost(@PathVariable("postId") Post post, Pageable pageable) {
+        UserDto user = LecwUtils.currentUser();
+        Page<CommentAttitudeDto> comments = commentService.getCommentByPost(post,user, pageable);
         return ResponseEntity.ok(comments);
     }
 }
