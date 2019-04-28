@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 //each Comment is represent here through this class
 @Entity
@@ -31,4 +32,7 @@ public class Comment {
     private List<Comment> comments;
     @ManyToOne
     private Post post;
+
+    @OneToMany(mappedBy = "comment")
+    private Set<CommentAttitude> attitudes;
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 //each Post is represented here through this class
 @Entity
@@ -47,4 +48,8 @@ public class Post {
     @JoinColumn(name = "post_id")
     @OneToMany
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "post")
+    private Set<PostAttitude> attitudes;
+
 }

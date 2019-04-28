@@ -1,6 +1,7 @@
 package cloud.forum.service;
 
 import cloud.forum.domain.Comment;
+import cloud.forum.domain.LemonUser;
 import cloud.forum.domain.Post;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import org.springframework.data.domain.Page;
@@ -13,5 +14,7 @@ public interface CommentService {
 
     Comment createComment(Comment comment);
 
-    Comment createComment(Comment comment);
+    Comment like(Comment comment, LemonUser user);
+
+    Comment dislike(Comment comment, LemonUser user);
 }

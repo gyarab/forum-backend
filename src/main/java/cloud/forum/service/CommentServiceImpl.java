@@ -1,7 +1,10 @@
 package cloud.forum.service;
 
 import cloud.forum.domain.Comment;
+import cloud.forum.domain.CommentAttitude;
+import cloud.forum.domain.LemonUser;
 import cloud.forum.domain.Post;
+import cloud.forum.repository.CommentAttitudeRepository;
 import cloud.forum.repository.CommentRepository;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import org.springframework.data.domain.Page;
@@ -10,13 +13,19 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import static cloud.forum.domain.enums.Attitude.DISLIKE;
+import static cloud.forum.domain.enums.Attitude.LIKE;
+
 @Service("commentService")
 @Transactional
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
 
-    public CommentServiceImpl(CommentRepository repository) {
+    private final CommentAttitudeRepository attitudeRepository;
+
+    public CommentServiceImpl(CommentRepository repository, CommentAttitudeRepository attitudeRepository) {
         this.repository = repository;
+        this.attitudeRepository = attitudeRepository;
     }
 
     @Override
@@ -80,4 +89,6 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(Comment comment) {
         return repository.save(comment);
     }
+
+
 }
