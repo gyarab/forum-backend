@@ -42,9 +42,9 @@ public class PostServiceImpl implements PostService {
         return Optional.ofNullable(user).map(a -> {
             LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
             return posts.map(post -> postAttitudeRepository.findByOwnerAndPost(lemonUser, post)
-                    .map(postAttitude -> new PostAttitudeDto(lemonUser.getId(), postAttitude.getAttitude(), post))
-                    .orElseGet(() -> new PostAttitudeDto(lemonUser.getId(), NEUTRAL, post)));
-        }).orElseGet(() -> posts.map(p -> new PostAttitudeDto(null, NEUTRAL, p)));
+                    .map(postAttitude -> new PostAttitudeDto(lemonUser.getId(),lemonUser.getName(), postAttitude.getAttitude(), post))
+                    .orElseGet(() -> new PostAttitudeDto(lemonUser.getId(), lemonUser.getName(), NEUTRAL, post)));
+        }).orElseGet(() -> posts.map(p -> new PostAttitudeDto(null, null, NEUTRAL, p)));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PostServiceImpl implements PostService {
         postAttitudeRepository.saveAndFlush(postAttitude);
         Post result = postRepository.saveAndFlush(post);
 
-        return new PostAttitudeDto(user.getId(),LIKE,result);
+        return new PostAttitudeDto(user.getId(), user.getName(), LIKE,result);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class PostServiceImpl implements PostService {
                 });
         postAttitudeRepository.saveAndFlush(postAttitude);
         Post result =  postRepository.saveAndFlush(post);
-        return new PostAttitudeDto(user.getId(),DISLIKE,result);
+        return new PostAttitudeDto(user.getId(), user.getName(), DISLIKE,result);
 
     }
 

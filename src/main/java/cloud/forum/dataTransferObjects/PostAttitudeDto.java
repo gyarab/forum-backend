@@ -9,8 +9,8 @@ public class PostAttitudeDto {
     private AttitudeDto attitudeDto;
     private Post post;
 
-    public PostAttitudeDto(Long lemonUserid, Attitude attitude, Post post) {
-        attitudeDto = new AttitudeDto(lemonUserid,attitude);
+    public PostAttitudeDto(Long lemonUserid, String name, Attitude attitude, Post post) {
+        attitudeDto = new AttitudeDto(lemonUserid,attitude,name);
         this.post = post;
     }
 }

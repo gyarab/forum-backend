@@ -1,7 +1,6 @@
 package cloud.forum.service;
 
 import cloud.forum.dataTransferObjects.CommentAttitudeDto;
-import cloud.forum.dataTransferObjects.PostAttitudeDto;
 import cloud.forum.domain.Comment;
 import cloud.forum.domain.CommentAttitude;
 import cloud.forum.domain.LemonUser;
@@ -43,9 +42,9 @@ public class CommentServiceImpl implements CommentService {
         return Optional.ofNullable(user).map(a -> {
             LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
             return comments.map(comment -> attitudeRepository.findByOwnerAndComment(lemonUser,comment)
-                    .map(commentAttitude ->  new CommentAttitudeDto(lemonUser.getId(),commentAttitude.getAttitude(),comment))
-                    .orElseGet(() -> new CommentAttitudeDto(lemonUser.getId(), NEUTRAL, comment)));
-        }).orElseGet(() -> comments.map(c -> new CommentAttitudeDto(null, NEUTRAL, c)));
+                    .map(commentAttitude ->  new CommentAttitudeDto(lemonUser.getId(), lemonUser.getName(), commentAttitude.getAttitude(),comment))
+                    .orElseGet(() -> new CommentAttitudeDto(lemonUser.getId(), lemonUser.getName(), NEUTRAL, comment)));
+        }).orElseGet(() -> comments.map(c -> new CommentAttitudeDto(null, null, NEUTRAL, c)));
     }
 
     @Override
@@ -73,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
                 });
         attitudeRepository.saveAndFlush(commentAttitude);
         Comment result = repository.saveAndFlush(comment);
-        return new CommentAttitudeDto(user.getId(),LIKE,result);
+        return new CommentAttitudeDto(user.getId(),user.getName(),LIKE,result);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class CommentServiceImpl implements CommentService {
                 });
         attitudeRepository.saveAndFlush(commentAttitude);
         Comment result =  repository.saveAndFlush(comment);
-        return new CommentAttitudeDto(user.getId(), DISLIKE, result);
+        return new CommentAttitudeDto(user.getId(), user.getName(), DISLIKE, result);
     }
 
     @Override

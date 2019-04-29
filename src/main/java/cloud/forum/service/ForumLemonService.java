@@ -15,4 +15,11 @@ public class ForumLemonService extends LemonService<LemonUser, Long> {
     public Long toId(String id) {
         return Long.valueOf(id);
     }
+
+    @Override
+    protected LemonUser createAdminUser() {
+        LemonUser adminUser = super.createAdminUser();
+        adminUser.setName("Admin");
+        return adminUser;
+    }
 }
