@@ -36,9 +36,12 @@ public class PostController {
         this.lemonService = lemonService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity createPost(@RequestBody Post post) {
-        Post result = postService.createPost(post);
+    @PostMapping("/create/{forumId}")
+    public ResponseEntity createPost(@PathVariable("forumId") Forum forum, @RequestBody Post post) {
+
+        Post result = post;
+        result.setForum(forum);
+                result=postService.createPost(post);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();
