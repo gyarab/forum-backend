@@ -66,7 +66,6 @@ public class PostController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable(name = "id") Long id) {
-        System.out.println(id);
         return ResponseEntity.ok(postService.findById(id));
     }
 
