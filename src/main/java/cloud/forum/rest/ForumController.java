@@ -3,6 +3,8 @@ package cloud.forum.rest;
 import cloud.forum.domain.Forum;
 import cloud.forum.service.ForumService;
 import cloud.forum.service.PostService;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
+import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +37,8 @@ public class ForumController {
     //Create a forum when the frontend sends a Forum object to the /forum/create url
     @PostMapping(value = "/create",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
     public ResponseEntity createForum(@RequestBody Forum forum) {
-        Forum result = forumService.createForum(forum);
+        UserDto user = LecwUtils.currentUser();
+        Forum result = forumService.createForum(forum,user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();

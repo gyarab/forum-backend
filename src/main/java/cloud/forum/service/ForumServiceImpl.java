@@ -1,9 +1,10 @@
 package cloud.forum.service;
 
 import cloud.forum.domain.Forum;
+import cloud.forum.domain.LemonUser;
 import cloud.forum.repository.ForumRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.naturalprogrammer.spring.lemon.LemonService;
+import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,14 +15,27 @@ import java.util.Map;
 public class ForumServiceImpl implements ForumService {
 
     private final ForumRepository repository;
+    private final LemonService<LemonUser, Long> lemonService;
 
-    public ForumServiceImpl(ForumRepository repository) {
+    public ForumServiceImpl(ForumRepository repository, LemonService lemonService) {
         this.repository = repository;
+        this.lemonService = lemonService;
     }
 
     @Override
     public Forum createForum(Forum forum) {
         return repository.save(forum);
+    }
+
+    @Override
+    public Forum createForum(Forum forum, UserDto user) {
+        return lemonService.findUserById(user.getId())
+                .map(u -> {
+                    forum.setUser(u);
+                    return forum;
+                })
+                .map(repository::saveAndFlush)
+                .orElseThrow(() -> new IllegalArgumentException("User is required"));
     }
 
     @Override
@@ -42,16 +56,16 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public Map<String, Long> getAllForumNames() {
         Map<String, Long> result = new HashMap<>();
-       repository.findAll().forEach(forum -> {
-           result.put(forum.getName(),forum.getId());
-       });
-       return result;
+        repository.findAll().forEach(forum -> {
+            result.put(forum.getName(), forum.getId());
+        });
+        return result;
     }
 
     @Override
     public Map<String, Long> searchByTitle(String forumName) {
         Map<String, Long> result = new HashMap<>();
-        repository.findForumsByNameContaining(forumName).forEach(forum ->{
+        repository.findForumsByNameContaining(forumName).forEach(forum -> {
             result.put(forum.getName(), forum.getId());
         });
         return result;

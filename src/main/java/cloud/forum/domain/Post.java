@@ -1,7 +1,6 @@
 package cloud.forum.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,4 +52,7 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private Set<PostAttitude> attitudes;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private LemonUser user;
 }

@@ -7,8 +7,6 @@ import cloud.forum.domain.Post;
 import cloud.forum.service.PostService;
 import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
-import com.naturalprogrammer.spring.lemon.commons.util.LecUtils;
-import com.naturalprogrammer.spring.lemon.commonsjpa.LecjUtils;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,10 +36,10 @@ public class PostController {
 
     @PostMapping("/create/{forumId}")
     public ResponseEntity createPost(@PathVariable("forumId") Forum forum, @RequestBody Post post) {
-
+        UserDto user = LecwUtils.currentUser();
         Post result = post;
         result.setForum(forum);
-                result=postService.createPost(post);
+        result = postService.createPost(post,user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();
@@ -50,7 +48,7 @@ public class PostController {
 
     @PutMapping("/update/like/{postId}")
     public ResponseEntity<PostAttitudeDto> likePost(@PathVariable("postId") Post post,
-                                         @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
+                                                    @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
         LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
         PostAttitudeDto result = postService.like(post, lemonUser);
         return ResponseEntity.ok(result);
@@ -58,7 +56,7 @@ public class PostController {
 
     @PutMapping("/update/dislike/{postId}")
     public ResponseEntity<PostAttitudeDto> dislikePost(@PathVariable("postId") Post post,
-                                            @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
+                                                       @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
         LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
         PostAttitudeDto result = postService.dislike(post, lemonUser);
         return ResponseEntity.ok(result);

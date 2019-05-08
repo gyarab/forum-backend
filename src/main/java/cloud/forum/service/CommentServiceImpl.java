@@ -14,18 +14,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-
 import java.util.Optional;
 
-import static cloud.forum.domain.enums.Attitude.DISLIKE;
-import static cloud.forum.domain.enums.Attitude.LIKE;
-import static cloud.forum.domain.enums.Attitude.NEUTRAL;
+import static cloud.forum.domain.enums.Attitude.*;
 
 @Service("commentService")
 @Transactional
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
-    private final LemonService<LemonUser,Long> lemonService;
+    private final LemonService<LemonUser, Long> lemonService;
     private final CommentAttitudeRepository attitudeRepository;
 
     public CommentServiceImpl(CommentRepository repository, LemonService<LemonUser, Long> lemonService, CommentAttitudeRepository attitudeRepository) {
@@ -41,8 +38,8 @@ public class CommentServiceImpl implements CommentService {
 
         return Optional.ofNullable(user).map(a -> {
             LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
-            return comments.map(comment -> attitudeRepository.findByOwnerAndComment(lemonUser,comment)
-                    .map(commentAttitude ->  new CommentAttitudeDto(lemonUser.getId(), lemonUser.getName(), commentAttitude.getAttitude(),comment))
+            return comments.map(comment -> attitudeRepository.findByOwnerAndComment(lemonUser, comment)
+                    .map(commentAttitude -> new CommentAttitudeDto(lemonUser.getId(), lemonUser.getName(), commentAttitude.getAttitude(), comment))
                     .orElseGet(() -> new CommentAttitudeDto(lemonUser.getId(), lemonUser.getName(), NEUTRAL, comment)));
         }).orElseGet(() -> comments.map(c -> new CommentAttitudeDto(null, null, NEUTRAL, c)));
     }
@@ -72,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
                 });
         attitudeRepository.saveAndFlush(commentAttitude);
         Comment result = repository.saveAndFlush(comment);
-        return new CommentAttitudeDto(user.getId(),user.getName(),LIKE,result);
+        return new CommentAttitudeDto(user.getId(), user.getName(), LIKE, result);
     }
 
     @Override
@@ -97,10 +94,20 @@ public class CommentServiceImpl implements CommentService {
                     return new CommentAttitude(user, comment, DISLIKE);
                 });
         attitudeRepository.saveAndFlush(commentAttitude);
-        Comment result =  repository.saveAndFlush(comment);
+        Comment result = repository.saveAndFlush(comment);
         return new CommentAttitudeDto(user.getId(), user.getName(), DISLIKE, result);
     }
 
+    @Override
+    public Comment createComment(Comment comment, UserDto user) {
+        return lemonService.findUserById(user.getId())
+                .map(u -> {
+                    comment.setUser(u);
+                    return comment;
+                })
+                .map(repository::saveAndFlush)
+                .orElseThrow(() -> new IllegalArgumentException("User is required"));
+    }
     @Override
     public Comment createComment(Comment comment) {
         return repository.save(comment);

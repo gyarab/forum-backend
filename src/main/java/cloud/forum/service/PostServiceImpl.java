@@ -14,12 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
-import java.util.*;
-
-import static cloud.forum.domain.enums.Attitude.DISLIKE;
-import static cloud.forum.domain.enums.Attitude.LIKE;
-import static cloud.forum.domain.enums.Attitude.NEUTRAL;
+import static cloud.forum.domain.enums.Attitude.*;
 
 @Service("postService")
 @Transactional
@@ -42,7 +39,7 @@ public class PostServiceImpl implements PostService {
         return Optional.ofNullable(user).map(a -> {
             LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
             return posts.map(post -> postAttitudeRepository.findByOwnerAndPost(lemonUser, post)
-                    .map(postAttitude -> new PostAttitudeDto(lemonUser.getId(),lemonUser.getName(), postAttitude.getAttitude(), post))
+                    .map(postAttitude -> new PostAttitudeDto(lemonUser.getId(), lemonUser.getName(), postAttitude.getAttitude(), post))
                     .orElseGet(() -> new PostAttitudeDto(lemonUser.getId(), lemonUser.getName(), NEUTRAL, post)));
         }).orElseGet(() -> posts.map(p -> new PostAttitudeDto(null, null, NEUTRAL, p)));
     }
@@ -55,6 +52,17 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post createPost(Post post) {
         return postRepository.save(post);
+    }
+
+    @Override
+    public Post createPost(Post post, UserDto user) {
+        return lemonService.findUserById(user.getId())
+                .map(u -> {
+                    post.setUser(u);
+                    return post;
+                })
+                .map(postRepository::saveAndFlush)
+                .orElseThrow(() -> new IllegalArgumentException("User is required"));
     }
 
     @Override
@@ -81,7 +89,7 @@ public class PostServiceImpl implements PostService {
         postAttitudeRepository.saveAndFlush(postAttitude);
         Post result = postRepository.saveAndFlush(post);
 
-        return new PostAttitudeDto(user.getId(), user.getName(), LIKE,result);
+        return new PostAttitudeDto(user.getId(), user.getName(), LIKE, result);
     }
 
     @Override
@@ -106,8 +114,8 @@ public class PostServiceImpl implements PostService {
                     return new PostAttitude(user, post, DISLIKE);
                 });
         postAttitudeRepository.saveAndFlush(postAttitude);
-        Post result =  postRepository.saveAndFlush(post);
-        return new PostAttitudeDto(user.getId(), user.getName(), DISLIKE,result);
+        Post result = postRepository.saveAndFlush(post);
+        return new PostAttitudeDto(user.getId(), user.getName(), DISLIKE, result);
 
     }
 

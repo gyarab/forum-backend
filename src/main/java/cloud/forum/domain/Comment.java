@@ -36,4 +36,9 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment")
     private Set<CommentAttitude> attitudes;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private LemonUser user;
+
 }

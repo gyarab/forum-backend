@@ -18,4 +18,6 @@ public interface CommentService {
     CommentAttitudeDto like(Comment comment, LemonUser user);
 
     CommentAttitudeDto dislike(Comment comment, LemonUser user);
+
+    Comment createComment(Comment result, UserDto user);
 }

@@ -1,6 +1,10 @@
 package cloud.forum.config;
 
+import com.naturalprogrammer.spring.lemon.commons.LemonProperties;
+import com.naturalprogrammer.spring.lemon.commons.security.BlueTokenService;
 import com.naturalprogrammer.spring.lemon.security.LemonJpaSecurityConfig;
+import com.nimbusds.jose.JOSEException;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Component;
 
@@ -8,37 +12,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecurityConfig extends LemonJpaSecurityConfig {
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-//                .successForwardUrl("/forum/all")
-//                .and()
-//                .httpBasic()
-//                .and()
-//                .csrf().disable()
-//                .cors().disable();
-//    }
-//
-//    @Bean
-//    public UserDetailsService userDetailsService(ForumUserRepository userRepository) {
-//        return new ForumUserDetailsService(userRepository);
-//    }
-
     @Override
     protected void authorizeRequests(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/forum/create/**", "/comment/update/**", "/post/update/**")
                 .authenticated();
-
         super.authorizeRequests(http);
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public BlueTokenService blueTokenService(LemonProperties properties) throws JOSEException {
+        return new ForumsJwsService(properties.getJwt().getSecret());
+    }
 }

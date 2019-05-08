@@ -34,7 +34,6 @@ public class CommentController {
     public ResponseEntity<CommentAttitudeDto> likeComment(@PathVariable("commentId") Comment comment,
                                                           @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {
         LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
-//        LecwUtils.currentUser()
         CommentAttitudeDto result = commentService.like(comment, lemonUser);
         return ResponseEntity.ok(result);
     }
@@ -50,9 +49,10 @@ public class CommentController {
     @PostMapping("/create/{postId}")
     public ResponseEntity createComment(@PathVariable("postId") Post post,
                                         @RequestBody Comment comment) {
+        UserDto user = LecwUtils.currentUser();
         Comment result =comment;
          result.setPost(post);
-               result =  commentService.createComment(result);
+               result =  commentService.createComment(result,user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();

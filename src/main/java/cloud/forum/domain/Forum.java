@@ -41,4 +41,8 @@ public class Forum {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
 //    @JsonBackReference("sub_forums")
     private List<Forum> children;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private LemonUser user;
 }
