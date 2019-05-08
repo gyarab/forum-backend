@@ -1,8 +1,6 @@
 package cloud.forum.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,12 +8,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
-//Main table
+
 @Entity
 @Table(name = "forum")
-/**
- * lombok creates get and set methods for us
- */
+//Lombok's @Getter and @Setter automatically create getters and setters for all variables, so we don't need to write them.
 @Getter
 @Setter
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")

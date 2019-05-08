@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "comment_attitude")
+//Lombok's @Getter and @Setter automatically create getters and setters for all variables, so we don't need to write them.
 @Getter
 @Setter
 public class CommentAttitude {

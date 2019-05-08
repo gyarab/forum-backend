@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
+//Lombok's @Getter and @Setter automatically create getters and setters for all variables, so we don't need to write them.
 @Getter
 @Setter
 @Table(name = "lemon_users")

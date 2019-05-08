@@ -10,6 +10,7 @@ import java.util.Set;
 //each Comment is represent here through this class
 @Entity
 @Table(name = "comment")
+//Lombok's @Getter and @Setter automatically create getters and setters for all variables, so we don't need to write them.
 @Getter
 @Setter
 public class Comment {

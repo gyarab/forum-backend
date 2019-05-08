@@ -72,7 +72,6 @@ public class PostController {
 
     @GetMapping("/forum/{id}/posts")
     public ResponseEntity<Page<PostAttitudeDto>> getForumPosts(@PathVariable(name = "id") Forum forum,
-//                                                               @AuthenticationPrincipal(expression = "currentUser()") UserDto user,
                                                                Pageable page) {
         UserDto user = LecwUtils.currentUser();
         return ResponseEntity.ok(postService.findByForum(forum, user, page));

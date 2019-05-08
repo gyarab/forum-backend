@@ -13,6 +13,7 @@ import java.util.Set;
 //each Post is represented here through this class
 @Entity
 @Table(name = "post")
+//Lombok's @Getter and @Setter automatically create getters and setters for all variables, so we don't need to write them.
 @Getter
 @Setter
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
