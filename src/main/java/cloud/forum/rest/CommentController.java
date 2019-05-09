@@ -57,7 +57,13 @@ public class CommentController {
                 .path("/{id}").buildAndExpand(result.getComment().getId()).toUri();
         return ResponseEntity.created(location).body(result);
     }
-
+    @DeleteMapping("/delete/{commentId}")
+    public ResponseEntity deletePost(@PathVariable("commentId") Comment comment){
+        UserDto user = LecwUtils.currentUser();
+        LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+        commentService.deleteComment(comment,lemonUser);
+        return ResponseEntity.ok().build();
+    }
     @GetMapping("/{postId}/post")
     public ResponseEntity<Page<CommentAttitudeDto>> commentsByPost(@PathVariable("postId") Post post, Pageable pageable) {
         UserDto user = LecwUtils.currentUser();

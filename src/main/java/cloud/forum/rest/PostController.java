@@ -45,6 +45,14 @@ public class PostController {
         return ResponseEntity.created(location).body(result);
     }
 
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity deletePost(@PathVariable("postId") Post post){
+        UserDto user = LecwUtils.currentUser();
+        LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+        postService.deletePost(post,lemonUser);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/update/like/{postId}")
     public ResponseEntity<PostAttitudeDto> likePost(@PathVariable("postId") Post post,
                                                     @AuthenticationPrincipal(expression = "currentUser()") UserDto user) {

@@ -40,6 +40,13 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
+    public void deleteForum(Forum forum, LemonUser lemonUser) {
+        if(lemonUser.getId().equals(forum.getUserId()))
+            repository.delete(forum);
+        else throw new IllegalArgumentException("User is not the owner");
+    }
+
+    @Override
     public List<Forum> getForumByParent(String parent) {
         return repository.findAllByParent(parent);
     }

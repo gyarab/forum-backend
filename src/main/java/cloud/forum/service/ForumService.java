@@ -1,6 +1,7 @@
 package cloud.forum.service;
 
 import cloud.forum.domain.Forum;
+import cloud.forum.domain.LemonUser;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,4 +24,5 @@ public interface ForumService {
 
     Forum createForum(Forum forum, UserDto user);
 
+    void deleteForum(Forum forum, LemonUser lemonUser);
 }

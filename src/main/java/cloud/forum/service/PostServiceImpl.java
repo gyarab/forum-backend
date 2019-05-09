@@ -50,11 +50,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(Post post) {
-        return postRepository.save(post);
-    }
-
-    @Override
     public PostAttitudeDto createPost(Post post, UserDto user) {
         LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
         Post post1 = lemonService.findUserById(user.getId())
@@ -66,6 +61,13 @@ public class PostServiceImpl implements PostService {
                 .map(postRepository::saveAndFlush)
                 .orElseThrow(() -> new IllegalArgumentException("User is required"));
         return new PostAttitudeDto(lemonUser.getId(),lemonUser.getName(),NEUTRAL,post1);
+    }
+
+    @Override
+    public void deletePost(Post post, LemonUser lemonUser) {
+        if(lemonUser.getId().equals(post.getUserId()))
+            postRepository.delete(post);
+        else throw new IllegalArgumentException("User is not the owner");
     }
 
     @Override

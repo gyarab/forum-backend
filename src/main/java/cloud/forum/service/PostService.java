@@ -13,11 +13,11 @@ public interface PostService {
 
     Post findById(Long id);
 
-    Post createPost(Post post);
-
     PostAttitudeDto like(Post post, LemonUser user);
 
     PostAttitudeDto dislike(Post post,LemonUser user);
 
     PostAttitudeDto createPost(Post post, UserDto user);
+
+    void deletePost(Post post, LemonUser lemonUser);
 }

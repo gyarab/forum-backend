@@ -114,5 +114,12 @@ public class CommentServiceImpl implements CommentService {
         return new CommentAttitudeDto(lemonUser.getId(),lemonUser.getName(),NEUTRAL,com);
     }
 
+    @Override
+    public void deleteComment(Comment comment, LemonUser lemonUser) {
+        if(lemonUser.getId().equals(comment.getUserId()))
+            repository.delete(comment);
+        else throw new IllegalArgumentException("User is not the owner");
+    }
+
 
 }

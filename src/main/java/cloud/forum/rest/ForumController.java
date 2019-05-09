@@ -1,8 +1,10 @@
 package cloud.forum.rest;
 
 import cloud.forum.domain.Forum;
+import cloud.forum.domain.LemonUser;
 import cloud.forum.service.ForumService;
 import cloud.forum.service.PostService;
+import com.naturalprogrammer.spring.lemon.LemonService;
 import com.naturalprogrammer.spring.lemon.commons.security.UserDto;
 import com.naturalprogrammer.spring.lemon.commonsweb.util.LecwUtils;
 import org.springframework.http.MediaType;
@@ -23,9 +25,11 @@ import java.util.Map;
 public class ForumController {
 
     private final ForumService forumService;
+    private final LemonService<LemonUser, Long> lemonService;
 
-    public ForumController(ForumService forumService, PostService postService) {
+    public ForumController(ForumService forumService, PostService postService, LemonService<LemonUser, Long> lemonService) {
         this.forumService = forumService;
+        this.lemonService = lemonService;
     }
 
     //Upon calling /forum/all get all forum names in the database.
@@ -47,7 +51,13 @@ public class ForumController {
         map.put(result.getName(),result.getId());
         return ResponseEntity.created(location).body(map);
     }
-
+    @DeleteMapping("/delete/{forumId}")
+    public ResponseEntity deletePost(@PathVariable("forumId") Forum forum){
+        UserDto user = LecwUtils.currentUser();
+        LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+        forumService.deleteForum(forum,lemonUser);
+        return ResponseEntity.ok().build();
+    }
     @GetMapping("/search/{name}")
     public ResponseEntity<Map<String, Long>> searchForumsByTitle(@PathVariable(name="name") String forumTitle){
         return ResponseEntity.ok(forumService.searchByTitle(forumTitle));
