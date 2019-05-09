@@ -35,15 +35,14 @@ public class PostController {
     }
 
     @PostMapping("/create/{forumId}")
-    public ResponseEntity createPost(@PathVariable("forumId") Forum forum, @RequestBody Post post) {
+    public ResponseEntity<PostAttitudeDto> createPost(@PathVariable("forumId") Forum forum, @RequestBody Post post) {
         UserDto user = LecwUtils.currentUser();
-        Post result = post;
-        result.setForum(forum);
-        result = postService.createPost(post,user);
+        post.setForum(forum);
+        PostAttitudeDto result = postService.createPost(post,user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}").buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location).body(post);
+                .path("/{id}").buildAndExpand(result.getPost().getId()).toUri();
+        return ResponseEntity.created(location).body(result);
     }
 
     @PutMapping("/update/like/{postId}")
@@ -71,6 +70,7 @@ public class PostController {
     public ResponseEntity<Page<PostAttitudeDto>> getForumPosts(@PathVariable(name = "id") Forum forum,
                                                                Pageable page) {
         UserDto user = LecwUtils.currentUser();
+
         return ResponseEntity.ok(postService.findByForum(forum, user, page));
     }
 }

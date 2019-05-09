@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static cloud.forum.domain.enums.Attitude.*;
@@ -99,18 +101,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment createComment(Comment comment, UserDto user) {
-        return lemonService.findUserById(user.getId())
+    public CommentAttitudeDto createComment(Comment comment, UserDto user) {
+        LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+        Comment com = lemonService.findUserById(user.getId())
                 .map(u -> {
-                    comment.setUser(u);
+                    comment.setUserId(u.getId());
+                    comment.setOwner(u.getName());
                     return comment;
                 })
                 .map(repository::saveAndFlush)
                 .orElseThrow(() -> new IllegalArgumentException("User is required"));
-    }
-    @Override
-    public Comment createComment(Comment comment) {
-        return repository.save(comment);
+        return new CommentAttitudeDto(lemonUser.getId(),lemonUser.getName(),NEUTRAL,com);
     }
 
 

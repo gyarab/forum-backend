@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -42,7 +43,9 @@ public class Forum {
 //    @JsonBackReference("sub_forums")
     private List<Forum> children;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private LemonUser user;
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "owner")
+    private String owner;
 }

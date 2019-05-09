@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 @CrossOrigin(origins = "*")
@@ -36,13 +37,15 @@ public class ForumController {
 
     //Create a forum when the frontend sends a Forum object to the /forum/create url
     @PostMapping(value = "/create",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE )
-    public ResponseEntity createForum(@RequestBody Forum forum) {
+    public ResponseEntity<Map<String,Long>> createForum(@RequestBody Forum forum) {
         UserDto user = LecwUtils.currentUser();
         Forum result = forumService.createForum(forum,user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}").buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location).build();
+        Map<String, Long> map = new HashMap<>();
+        map.put(result.getName(),result.getId());
+        return ResponseEntity.created(location).body(map);
     }
 
     @GetMapping("/search/{name}")

@@ -19,5 +19,5 @@ public interface PostService {
 
     PostAttitudeDto dislike(Post post,LemonUser user);
 
-    Post createPost(Post post, UserDto user);
+    PostAttitudeDto createPost(Post post, UserDto user);
 }

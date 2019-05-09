@@ -47,15 +47,14 @@ public class CommentController {
     }
 
     @PostMapping("/create/{postId}")
-    public ResponseEntity createComment(@PathVariable("postId") Post post,
+    public ResponseEntity<CommentAttitudeDto> createComment(@PathVariable("postId") Post post,
                                         @RequestBody Comment comment) {
         UserDto user = LecwUtils.currentUser();
-        Comment result =comment;
-         result.setPost(post);
-               result =  commentService.createComment(result,user);
+         comment.setPost(post);
+              CommentAttitudeDto result =  commentService.createComment(comment,user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}").buildAndExpand(result.getId()).toUri();
+                .path("/{id}").buildAndExpand(result.getComment().getId()).toUri();
         return ResponseEntity.created(location).body(result);
     }
 

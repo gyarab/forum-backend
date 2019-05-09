@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 //each Post is represented here through this class
@@ -52,7 +54,9 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private Set<PostAttitude> attitudes;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private LemonUser user;
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "owner")
+    private String owner;
 }

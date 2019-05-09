@@ -55,14 +55,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(Post post, UserDto user) {
-        return lemonService.findUserById(user.getId())
+    public PostAttitudeDto createPost(Post post, UserDto user) {
+        LemonUser lemonUser = lemonService.findUserById(user.getId()).orElseThrow(IllegalStateException::new);
+        Post post1 = lemonService.findUserById(user.getId())
                 .map(u -> {
-                    post.setUser(u);
+                    post.setOwner(u.getName());
+                    post.setUserId(u.getId());
                     return post;
                 })
                 .map(postRepository::saveAndFlush)
                 .orElseThrow(() -> new IllegalArgumentException("User is required"));
+        return new PostAttitudeDto(lemonUser.getId(),lemonUser.getName(),NEUTRAL,post1);
     }
 
     @Override

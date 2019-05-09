@@ -31,7 +31,8 @@ public class ForumServiceImpl implements ForumService {
     public Forum createForum(Forum forum, UserDto user) {
         return lemonService.findUserById(user.getId())
                 .map(u -> {
-                    forum.setUser(u);
+                    forum.setUserId(u.getId());
+                    forum.setOwner(u.getName());
                     return forum;
                 })
                 .map(repository::saveAndFlush)

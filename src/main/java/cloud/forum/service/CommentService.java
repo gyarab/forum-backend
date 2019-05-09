@@ -13,11 +13,9 @@ import org.springframework.stereotype.Service;
 public interface CommentService {
     Page<CommentAttitudeDto> getCommentByPost(Post post, UserDto user, Pageable pageable);
 
-    Comment createComment(Comment comment);
-
     CommentAttitudeDto like(Comment comment, LemonUser user);
 
     CommentAttitudeDto dislike(Comment comment, LemonUser user);
 
-    Comment createComment(Comment result, UserDto user);
+    CommentAttitudeDto createComment(Comment result, UserDto user);
 }
