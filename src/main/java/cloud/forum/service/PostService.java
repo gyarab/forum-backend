@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 public interface PostService {
     Page<PostAttitudeDto> findByForum(Forum forum, UserDto user, Pageable page);
 
-    Post findById(Long id);
+    PostAttitudeDto findById(Long id, UserDto userDto);
 
     PostAttitudeDto like(Post post, LemonUser user);
 

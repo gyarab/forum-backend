@@ -5,6 +5,7 @@ import cloud.forum.domain.Forum;
 import cloud.forum.domain.LemonUser;
 import cloud.forum.domain.Post;
 import cloud.forum.domain.PostAttitude;
+import cloud.forum.domain.enums.Attitude;
 import cloud.forum.repository.PostAttitudeRepository;
 import cloud.forum.repository.PostRepository;
 import com.naturalprogrammer.spring.lemon.LemonService;
@@ -45,8 +46,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post findById(Long id) {
-        return postRepository.findById(id).isPresent() ? postRepository.findById(id).get() : null;
+    public PostAttitudeDto findById(Long id, UserDto userDto) {
+        LemonUser lemonUser = lemonService.findUserById(userDto.getId()).orElseThrow(IllegalStateException::new);
+        Post post = postRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("No such post"));
+        Attitude attitude = postAttitudeRepository.findByOwnerAndPost(lemonUser, post).map(PostAttitude::getAttitude).orElse(NEUTRAL);
+        return new PostAttitudeDto(lemonUser.getId(),lemonUser.getName(),attitude,post);
     }
 
     @Override

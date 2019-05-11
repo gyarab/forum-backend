@@ -18,6 +18,8 @@ spring:
           facebook:
             client-id: 1234020186718741
             client-secret: 0c0abaf685a83e879e8e48b1167c96ab
+#  jpa:
+#    open-in-view: false
 lemon:
   admin:
     username: admin@example.com
@@ -28,4 +30,3 @@ lemon:
     secret: 27924159D8B777B9457245B231294A62
   cors:
     allowed-origins: '*'
-

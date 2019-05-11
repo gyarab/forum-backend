@@ -70,15 +70,15 @@ public class PostController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(postService.findById(id));
+    public ResponseEntity<PostAttitudeDto> getPostById(@PathVariable(name = "id") Long id) {
+        UserDto user = LecwUtils.currentUser();
+        return ResponseEntity.ok(postService.findById(id,user));
     }
 
     @GetMapping("/forum/{id}/posts")
     public ResponseEntity<Page<PostAttitudeDto>> getForumPosts(@PathVariable(name = "id") Forum forum,
                                                                Pageable page) {
         UserDto user = LecwUtils.currentUser();
-
         return ResponseEntity.ok(postService.findByForum(forum, user, page));
     }
 }
